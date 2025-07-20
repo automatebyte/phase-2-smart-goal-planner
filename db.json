@@ -1,7 +1,7 @@
 {
   "goals": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Learn React",
       "description": "Complete the React documentation",
       "category": "Education",
@@ -12,7 +12,7 @@
       "savedAmount": null
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Emergency Fund",
       "description": "Save for 3 months expenses",
       "category": "Finance",
@@ -23,7 +23,7 @@
       "savedAmount": 25000
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Morning Jog",
       "description": "Run 3km every morning",
       "category": "Health",
@@ -34,7 +34,7 @@
       "savedAmount": null
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Portfolio Website",
       "description": "Build project portfolio",
       "category": "Career",

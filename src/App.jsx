@@ -1,120 +1,165 @@
-// Import the stuff we need
-import { useState, useEffect } from 'react';
-import GoalList from './components/GoalList';
-import AddGoalForm from './components/AddGoalForm';
-import Overview from './components/Overview';
-import './App.css'; // Our styles
+// Import all the necessary tools and components
+import { useState, useEffect } from 'react'; // React hooks for state and side effects
+import GoalList from './Components/GoalList'; // Component to display all goals
+import AddGoalForm from './Components/AddGoalForm'; // Form to add new goals
+import Overview from './Components/Overview'; // Summary statistics component
+import './App.css'; // Our styling file
 
 function App() {
-  // This is where we keep our goals
+  // State to store our list of goals
   const [goals, setGoals] = useState([]);
+  // State to track if data is loading
+  const [isLoading, setIsLoading] = useState(true);
+  // State to store any error messages
+  const [error, setError] = useState(null);
 
-  // When the app starts, load the goals
+  // This runs when the component first loads
   useEffect(() => {
-    console.log("Loading goals...");
-    fetch('http://localhost:3001/goals')
-      .then(response => {
-        if (!response.ok) throw new Error("Oops, couldn't load goals!");
-        return response.json();
-      })
-      .then(data => {
-        console.log("Got goals:", data);
-        setGoals(data);
-      })
-      .catch(error => {
-        console.error("Something went wrong:", error);
-      });
-  }, []);
-
-  // Add a new goal (like when you submit the form)
-  const addNewGoal = (goalData) => {
-    console.log("Adding new goal:", goalData);
-    
-    // Fix the data before sending
-    const completeGoal = {
-      ...goalData,
-      createdAt: new Date().toLocaleDateString(), // Add today's date
-      savedAmount: goalData.category === 'Finance' ? 0 : null // Money stuff
+    const fetchGoals = async () => {
+      setIsLoading(true); // Show loading state
+      try {
+        // Try to get goals from our server
+        const response = await fetch('http://localhost:3001/goals');
+        
+        // If response isn't okay, throw an error
+        if (!response.ok) {
+          throw new Error('Failed to fetch goals');
+        }
+        
+        // Convert response to JSON
+        const data = await response.json();
+        setGoals(data); // Update our goals state
+      } catch (err) {
+        // If anything goes wrong, catch the error
+        setError(err.message); // Store error message
+        console.error('Error:', err);
+      } finally {
+        // Whether successful or not, stop loading
+        setIsLoading(false);
+      }
     };
 
-    fetch('http://localhost:3001/goals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(completeGoal)
-    })
-      .then(res => res.json())
-      .then(newGoal => {
-        console.log("Server says:", newGoal);
-        setGoals([...goals, newGoal]); // Add to our list
-      });
-  };
+    fetchGoals(); // Call our async function
+  }, []); // Empty array means this runs only once on mount
 
-  // Delete a goal (when you click the X button)
-  const deleteGoal = (goalId) => {
-    console.log("Deleting goal", goalId);
-    
-    fetch(`http://localhost:3001/goals/${goalId}`, {
-      method: 'DELETE'
-    })
-      .then(() => {
-        // Remove it from our list
-        setGoals(goals.filter(g => g.id !== goalId));
-        console.log("Poof! It's gone!");
-      });
-  };
+  // Function to add a new goal
+  const addNewGoal = async (goalData) => {
+    try {
+      // Prepare the complete goal data
+      const completeGoal = {
+        ...goalData,
+        createdAt: new Date().toISOString(), // Add creation timestamp
+        savedAmount: goalData.category === 'Finance' ? 0 : null, // Set initial savings
+        status: 'Not Started' // Default status
+      };
 
-  // Add money to a savings goal
-  const addToSavings = (goalId, amount) => {
-    console.log(`Adding $${amount} to goal ${goalId}`);
-    
-    const goal = goals.find(g => g.id === goalId);
-    if (!goal || !goal.targetAmount) {
-      console.log("This isn't a money goal!");
-      return;
+      // Send the new goal to our server
+      const response = await fetch('http://localhost:3001/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(completeGoal)
+      });
+
+      // Get the newly created goal from response
+      const newGoal = await response.json();
+      
+      // Update our state with the new goal
+      setGoals([...goals, newGoal]);
+    } catch (err) {
+      // Handle any errors
+      setError('Failed to add goal');
+      console.error('Error:', err);
     }
-
-    const updatedAmount = goal.savedAmount + Number(amount);
-    
-    fetch(`http://localhost:3001/goals/${goalId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ savedAmount: updatedAmount })
-    })
-      .then(res => res.json())
-      .then(updatedGoal => {
-        // Update just this goal
-        setGoals(goals.map(g => 
-          g.id === goalId ? updatedGoal : g
-        ));
-        console.log("Money added!");
-      });
   };
 
-  // This is what shows up on screen
+  // Function to delete a goal
+  const deleteGoal = async (goalId) => {
+    try {
+      // Tell server to delete this goal
+      await fetch(`http://localhost:3001/goals/${goalId}`, {
+        method: 'DELETE'
+      });
+      
+      // Remove the goal from our state
+      setGoals(goals.filter(goal => goal.id !== goalId));
+    } catch (err) {
+      // Handle any errors
+      setError('Failed to delete goal');
+      console.error('Error:', err);
+    }
+  };
+
+  // Function to add money to a savings goal
+  const addToSavings = async (goalId, amount) => {
+    try {
+      // Find the goal we're updating
+      const goal = goals.find(g => g.id === goalId);
+      
+      // Only proceed if it's a financial goal
+      if (goal && goal.targetAmount !== null) {
+        // Calculate new saved amount
+        const updatedAmount = goal.savedAmount + Number(amount);
+        
+        // Update the goal on the server
+        const response = await fetch(`http://localhost:3001/goals/${goalId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ savedAmount: updatedAmount })
+        });
+
+        // Get the updated goal from response
+        const updatedGoal = await response.json();
+        
+        // Update our state with the changed goal
+        setGoals(goals.map(g => g.id === goalId ? updatedGoal : g));
+      }
+    } catch (err) {
+      // Handle any errors
+      setError('Failed to add to savings');
+      console.error('Error:', err);
+    }
+  };
+
+  // This is what gets displayed on the screen
   return (
     <div className="app">
+      {/* Header section */}
       <header>
         <h1>My Goal Tracker </h1>
-        <p>Keep track of what matters</p>
+        <p>Track your progress and achieve more</p>
       </header>
 
+      {/* Main content area */}
       <main>
-        {/* Show quick stats */}
+        {/* Show any errors that occurred */}
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError(null)}>Dismiss</button>
+          </div>
+        )}
+
+        {/* Overview statistics */}
         <Overview goals={goals} />
 
         {/* Form to add new goals */}
         <AddGoalForm onAddGoal={addNewGoal} />
 
-        {/* The big list of goals */}
-        <GoalList
-          goals={goals}
-          onDelete={deleteGoal}
-          onDeposit={addToSavings}
-        />
+        {/* Show loading message or goal list */}
+        {isLoading ? (
+          <div className="loading">Loading your goals...</div>
+        ) : (
+          <GoalList
+            goals={goals}
+            onDelete={deleteGoal}
+            onDeposit={addToSavings}
+          />
+        )}
       </main>
 
+      {/* Footer */}
       <footer>
-        <p>Made with React</p>
+        <p>Made with  using React</p>
       </footer>
     </div>
   );

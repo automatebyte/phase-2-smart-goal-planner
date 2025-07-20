@@ -1,6 +1,121 @@
 
-.app-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+/* General Reset and Global Styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Header */
+h1, h2, h3 {
+  color: #333;
+  text-align: center;
+}
+
+/* Goal List */
+.goal-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Goal Card */
+.goal-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.goal-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.goal-card h3 {
+  margin-top: 0;
+  color: #2b7a78;
+}
+
+.goal-card p {
+  margin: 10px 0;
+  font-size: 0.95rem;
+}
+
+.goal-card button {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.goal-card button:hover {
+  background-color: #d62828;
+}
+
+/* Add Goal Form */
+.add-goal-form {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 40px;
+}
+
+.add-goal-form label {
+  display: block;
+  margin: 12px 0 4px;
+  font-weight: bold;
+}
+
+.add-goal-form input,
+.add-goal-form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.add-goal-form button {
+  background-color: #2a9d8f;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.add-goal-form button:hover {
+  background-color: #21867a;
+}
+
+/* Overview Section */
+.overview {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.overview p {
+  margin: 10px 0;
+  font-size: 1.1rem;
 }

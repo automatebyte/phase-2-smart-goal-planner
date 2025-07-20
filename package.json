@@ -2,16 +2,16 @@
   "name": "phase-2-smart-goal-planner",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "start": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3001",
-    "dev:all": "concurrently \"npm run dev\" \"npm run server\""
-  },
+  "type": "module","scripts": {
+  "dev": "vite",                                       
+  "start": "vite",                                     
+  "build": "vite build",                              
+  "preview": "vite preview",                           
+  "lint": "eslint .",                                 
+  "server": "json-server --watch db.json --port 3001", 
+  "dev:all": "concurrently \"npm run dev\" \"npm run server\"" 
+}
+,
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
