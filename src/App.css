@@ -1,121 +1,229 @@
-
-/* General Reset and Global Styles */
-body {
+/* Reset and font setup for consistency across browsers */
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
 }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
+/* App Background - use a clean image that suits students, such as books, goals, or abstract tech */
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
+              url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  padding: 30px;
 }
 
-/* Header */
-h1, h2, h3 {
-  color: #333;
+
+/* Glassmorphism container styling */
+.app-container {
+  max-width: 1000px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Header style */
+header {
   text-align: center;
+  margin-bottom: 30px;
 }
 
-/* Goal List */
-.goal-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+header h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #f0db4f;
+  text-shadow: 2px 2px #000;
+  margin-bottom: 10px;
 }
 
-/* Goal Card */
-.goal-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-  padding: 20px;
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.goal-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.goal-card h3 {
-  margin-top: 0;
-  color: #2b7a78;
-}
-
-.goal-card p {
-  margin: 10px 0;
-  font-size: 0.95rem;
-}
-
-.goal-card button {
-  background-color: #e63946;
-  color: white;
+/* Universal Button styling */
+button {
+  background-color: #f0db4f;
+  color: #333;
   border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
   cursor: pointer;
-  align-self: flex-end;
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
 }
 
-.goal-card button:hover {
-  background-color: #d62828;
+button:hover {
+  background-color: #ffcc00;
+  transform: scale(1.05);
 }
 
-/* Add Goal Form */
+/* Form Section */
 .add-goal-form {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
   padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 40px;
+  border-radius: 15px;
+  margin-bottom: 30px;
 }
 
 .add-goal-form label {
   display: block;
-  margin: 12px 0 4px;
+  margin-bottom: 10px;
+  color: #eee;
   font-weight: bold;
 }
 
 .add-goal-form input,
+.add-goal-form select,
 .add-goal-form textarea {
   width: 100%;
   padding: 10px;
+  margin-top: 5px;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.add-goal-form button {
-  background-color: #2a9d8f;
-  color: white;
-  padding: 10px 16px;
   border: none;
-  border-radius: 8px;
-  margin-top: 20px;
-  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
-.add-goal-form button:hover {
-  background-color: #21867a;
+.add-goal-form input:focus,
+.add-goal-form select:focus,
+.add-goal-form textarea:focus {
+  border: 2px solid #f0db4f;
+  outline: none;
 }
 
-/* Overview Section */
+/* Section: Progress Overview */
 .overview {
-  background-color: #f1f1f1;
-  padding: 20px;
-  border-radius: 12px;
   margin-bottom: 30px;
-  text-align: center;
 }
 
-.overview p {
-  margin: 10px 0;
-  font-size: 1.1rem;
+.overview h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #f0db4f;
+  margin-bottom: 20px;
 }
+
+/* Grid layout for stat cards */
+.stats-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* Stat card box */
+.stat-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Title and text inside stat cards */
+.stat-card h3 {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.stat-card p {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+/* Unique borders for different stat categories */
+.stat-card.completed {
+  border-left: 6px solid limegreen;
+}
+
+.stat-card.in-progress {
+  border-left: 6px solid orange;
+}
+
+.stat-card.money {
+  border-left: 6px solid #00c3ff;
+}
+
+/* Mini progress bar inside stat cards */
+.mini-progress {
+  height: 8px;
+  background-color: #ccc;
+  border-radius: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.mini-progress div {
+  height: 100%;
+  background-color: #00e1ff;
+  transition: width 0.5s ease;
+}
+
+/* Main list of goals */
+.goal-list {
+  margin-top: 30px;
+}
+
+/* Individual goal item */
+.goal-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: background 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Goal title */
+.goal-item h4 {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+/* Status label */
+.goal-item .status {
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+/* Status colors using class names instead of ["value"] */
+.status.Completed {
+  background-color: limegreen;
+  color: #fff;
+}
+
+.status.in-progress {
+  background-color: orange;
+  color: #fff;
+}
+
+.status.not-started {
+  background-color: gray;
+  color: #fff;
+}
+
+/* Footer Styling */
+footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ccc;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+

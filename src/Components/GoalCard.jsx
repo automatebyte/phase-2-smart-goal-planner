@@ -1,70 +1,77 @@
+// GoalCard.jsx - Component to display each individual goal card
 import { useState } from 'react';
 
-// This shows one single goal card
 export default function GoalCard({ goal, onDelete, onDeposit }) {
   const [amount, setAmount] = useState('');
 
-  // Figure out if the goal is almost due
+  // Calculate the number of days left until the deadline
   const daysLeft = Math.ceil(
     (new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24)
   );
-  const isAlmostDue = daysLeft <= 30 && goal.status !== 'Completed';
-  const isOverdue = daysLeft < 0 && goal.status !== 'Completed';
 
-  // Handle adding money to savings goals
+  // Flags for urgency
+  const isAlmostDue = daysLeft <= 30 && goal.status !== 'Completed'; // If 30 days or less remaining
+  const isOverdue = daysLeft < 0 && goal.status !== 'Completed'; // If date has passed
+
+  // Handles money deposit to savings goal
   const handleAddMoney = (e) => {
     e.preventDefault();
     if (amount && goal.targetAmount) {
-      onDeposit(goal.id, amount);
-      setAmount('');
+      onDeposit(goal.id, Number(amount)); // Trigger deposit callback from parent
+      setAmount(''); // Clear input
     }
   };
 
   return (
     <div className={`goal-card ${isOverdue ? 'urgent' : ''}`}>
+      {/* Title and category */}
       <h3>{goal.name}</h3>
       <p className="category">{goal.category}</p>
-      <p>{goal.description}</p>
+      <p className="description">{goal.description}</p>
 
-      {/* Show progress for money goals */}
+      {/* Financial goal progress section */}
       {goal.targetAmount && (
-        <div className="money-stuff">
+        <div className="money-section">
           <div className="progress-bar">
-            <div 
-              className="progress" 
-              style={{ width: `${(goal.savedAmount / goal.targetAmount) * 100}%` }}
+            <div
+              className="progress"
+              style={{
+                width: `${(goal.savedAmount / goal.targetAmount) * 100}%`,
+              }}
             ></div>
           </div>
-          <p>Saved: ${goal.savedAmount} of ${goal.targetAmount}</p>
+          <p className="money-tracker">
+            Saved: <strong>${goal.savedAmount}</strong> of ${goal.targetAmount}
+          </p>
         </div>
       )}
 
-      {/* Deadline info */}
+      {/* Deadline and urgency message */}
       <p className="due-date">
-        Due: {goal.deadline}
-        {isAlmostDue && ' - Hurry up!'}
-        {isOverdue && ' - Late!'}
+        <strong>Due:</strong> {goal.deadline}{' '}
+        {isAlmostDue && <span className="almost-due"> - Hurry up!</span>}
+        {isOverdue && <span className="overdue"> - Late!</span>}
       </p>
 
-      {/* Add money form for savings goals */}
+      {/* Form to add money (only for savings goals) */}
       {goal.targetAmount && (
-        <form onSubmit={handleAddMoney}>
+        <form onSubmit={handleAddMoney} className="deposit-form">
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="How much to add?"
+            placeholder="Enter amount"
+            required
           />
-          <button type="submit">Add</button>
+          <button type="submit" className="deposit-btn">Add</button>
         </form>
       )}
 
-      <button 
-        onClick={() => onDelete(goal.id)}
-        className="delete-button"
-      >
+      {/* Delete goal button */}
+      <button onClick={() => onDelete(goal.id)} className="delete-button">
         × Delete
       </button>
     </div>
   );
 }
+
