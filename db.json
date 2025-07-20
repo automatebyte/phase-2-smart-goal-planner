@@ -1,0 +1,84 @@
+{
+  "goals": [
+    {
+      "id": 1,
+      "title": "Learn React",
+      "description": "Complete the React documentation and build 2 projects.",
+      "category": "Education",
+      "status": "In Progress",
+      "deadline": "2025-08-15"
+    },
+    {
+      "id": 2,
+      "title": "Run 5km Daily",
+      "description": "Morning runs for better health and discipline.",
+      "category": "Health",
+      "status": "Not Started",
+      "deadline": "2025-09-01"
+    },
+    {
+      "id": 3,
+      "title": "Start Freelance Portfolio",
+      "description": "Build a personal portfolio website to attract clients.",
+      "category": "Career",
+      "status": "Completed",
+      "deadline": "2025-07-30"
+    },
+    {
+      "id": 4,
+      "title": "Read 3 Books",
+      "description": "Finish 3 personal development books.",
+      "category": "Personal Development",
+      "status": "In Progress",
+      "deadline": "2025-08-20"
+    },
+    {
+      "id": 5,
+      "title": "Meal Prep Weekly",
+      "description": "Plan and prepare healthy meals every Sunday.",
+      "category": "Health",
+      "status": "In Progress",
+      "deadline": "2025-08-05"
+    },
+    {
+      "id": 6,
+      "title": "Save Ksh 10,000",
+      "description": "Set aside Ksh 2,500 every week for a month.",
+      "category": "Finance",
+      "status": "Not Started",
+      "deadline": "2025-08-31"
+    },
+    {
+      "id": 7,
+      "title": "Launch YouTube Channel",
+      "description": "Record and publish 3 introductory videos.",
+      "category": "Career",
+      "status": "Not Started",
+      "deadline": "2025-09-10"
+    },
+    {
+      "id": 8,
+      "title": "Daily Meditation",
+      "description": "Meditate for 10 minutes every morning for 21 days.",
+      "category": "Wellness",
+      "status": "In Progress",
+      "deadline": "2025-08-21"
+    },
+    {
+      "id": 9,
+      "title": "Master Git & GitHub",
+      "description": "Complete an online Git course and manage 3 repositories.",
+      "category": "Education",
+      "status": "Completed",
+      "deadline": "2025-07-29"
+    },
+    {
+      "id": 10,
+      "title": "Host Networking Event",
+      "description": "Organize a virtual meet-up for developers in my community.",
+      "category": "Community",
+      "status": "Not Started",
+      "deadline": "2025-09-05"
+    }
+  ]
+}
