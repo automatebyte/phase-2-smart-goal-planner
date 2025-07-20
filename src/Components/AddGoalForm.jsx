@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-// This is the form for adding new goals
+// Component for adding a new goal
 export default function AddGoalForm({ onAddGoal }) {
-  // Keep track of what the user types
+  // Local state to manage form inputs
   const [newGoal, setNewGoal] = useState({
     name: '',
     description: '',
@@ -11,27 +11,27 @@ export default function AddGoalForm({ onAddGoal }) {
     targetAmount: ''
   });
 
-  // When the form is submitted
+  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Basic validation - make sure name is filled
+
+    // Simple validation: check if the goal name is entered
     if (!newGoal.name.trim()) {
       alert("Please give your goal a name!");
       return;
     }
 
-    // Prepare the goal data
+    // Create a goal object with extra default properties
     const goalToAdd = {
       ...newGoal,
       targetAmount: newGoal.targetAmount ? Number(newGoal.targetAmount) : null,
-      status: 'Not Started'
+      status: 'Not Started' // default status
     };
 
-    // Send to parent component
+    // Send the new goal to the parent component
     onAddGoal(goalToAdd);
 
-    // Clear the form
+    // Reset the form after submission
     setNewGoal({
       name: '',
       description: '',
@@ -41,9 +41,11 @@ export default function AddGoalForm({ onAddGoal }) {
     });
   };
 
-  // Update state when inputs change
+  // Function to handle input field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Update state with new input value
     setNewGoal(prev => ({
       ...prev,
       [name]: value
@@ -53,7 +55,8 @@ export default function AddGoalForm({ onAddGoal }) {
   return (
     <form onSubmit={handleSubmit} className="add-goal-form">
       <h3>Add New Goal</h3>
-      
+
+      {/* Goal name input */}
       <label>
         Goal Name:
         <input
@@ -66,6 +69,7 @@ export default function AddGoalForm({ onAddGoal }) {
         />
       </label>
 
+      {/* Description textarea */}
       <label>
         Description:
         <textarea
@@ -76,6 +80,7 @@ export default function AddGoalForm({ onAddGoal }) {
         />
       </label>
 
+      {/* Goal category dropdown */}
       <label>
         Category:
         <select
@@ -91,6 +96,7 @@ export default function AddGoalForm({ onAddGoal }) {
         </select>
       </label>
 
+      {/* Deadline input */}
       <label>
         Deadline:
         <input
@@ -98,10 +104,11 @@ export default function AddGoalForm({ onAddGoal }) {
           name="deadline"
           value={newGoal.deadline}
           onChange={handleChange}
-          min={new Date().toISOString().split('T')[0]}
+          min={new Date().toISOString().split('T')[0]} // today's date or later
         />
       </label>
 
+      {/* Optional target amount for financial goals */}
       <label>
         Target Amount (for financial goals):
         <input
@@ -109,11 +116,12 @@ export default function AddGoalForm({ onAddGoal }) {
           name="targetAmount"
           value={newGoal.targetAmount}
           onChange={handleChange}
-          placeholder="Leave empty for non-financial goals"
+          placeholder="Leave empty if not financial"
           min="0"
         />
       </label>
 
+      {/* Submit button */}
       <button type="submit">Add Goal</button>
     </form>
   );
