@@ -1,75 +1,121 @@
+// Import the stuff we need
 import { useState, useEffect } from 'react';
 import GoalList from './components/GoalList';
 import AddGoalForm from './components/AddGoalForm';
 import Overview from './components/Overview';
-import './App.css';
+import './App.css'; // Our styles
 
 function App() {
+  // This is where we keep our goals
   const [goals, setGoals] = useState([]);
 
-  // Load all goals on startup
+  // When the app starts, load the goals
   useEffect(() => {
+    console.log("Loading goals...");
     fetch('http://localhost:3001/goals')
-      .then(res => res.json())
-      .then(setGoals)
-      .catch(err => console.error("Loading failed:", err));
+      .then(response => {
+        if (!response.ok) throw new Error("Oops, couldn't load goals!");
+        return response.json();
+      })
+      .then(data => {
+        console.log("Got goals:", data);
+        setGoals(data);
+      })
+      .catch(error => {
+        console.error("Something went wrong:", error);
+      });
   }, []);
 
-  // Add new goal (handles both financial and non-financial)
-  const handleAddGoal = (newGoal) => {
-    const goalWithDefaults = {
-      ...newGoal,
-      createdAt: new Date().toISOString().split('T')[0],
-      targetAmount: newGoal.category === 'Finance' ? newGoal.targetAmount : null,
-      savedAmount: newGoal.category === 'Finance' ? 0 : null
+  // Add a new goal (like when you submit the form)
+  const addNewGoal = (goalData) => {
+    console.log("Adding new goal:", goalData);
+    
+    // Fix the data before sending
+    const completeGoal = {
+      ...goalData,
+      createdAt: new Date().toLocaleDateString(), // Add today's date
+      savedAmount: goalData.category === 'Finance' ? 0 : null // Money stuff
     };
 
     fetch('http://localhost:3001/goals', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(goalWithDefaults)
+      body: JSON.stringify(completeGoal)
     })
       .then(res => res.json())
-      .then(createdGoal => setGoals([...goals, createdGoal]));
-  };
-
-  // Delete any goal
-  const handleDeleteGoal = (id) => {
-    fetch(`http://localhost:3001/goals/${id}`, { method: 'DELETE' })
-      .then(() => setGoals(goals.filter(g => g.id !== id)));
-  };
-
-  // Deposit only for financial goals
-  const handleDeposit = (goalId, amount) => {
-    const goal = goals.find(g => g.id === goalId);
-    if (!goal.targetAmount) return; // Skip non-financial
-
-    const updatedGoal = {
-      ...goal,
-      savedAmount: goal.savedAmount + Number(amount)
-    };
-
-    fetch(`http://localhost:3001/goals/${goalId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ savedAmount: updatedGoal.savedAmount })
-    })
-      .then(res => res.json())
-      .then(updated => {
-        setGoals(goals.map(g => g.id === goalId ? updated : g));
+      .then(newGoal => {
+        console.log("Server says:", newGoal);
+        setGoals([...goals, newGoal]); // Add to our list
       });
   };
 
+  // Delete a goal (when you click the X button)
+  const deleteGoal = (goalId) => {
+    console.log("Deleting goal", goalId);
+    
+    fetch(`http://localhost:3001/goals/${goalId}`, {
+      method: 'DELETE'
+    })
+      .then(() => {
+        // Remove it from our list
+        setGoals(goals.filter(g => g.id !== goalId));
+        console.log("Poof! It's gone!");
+      });
+  };
+
+  // Add money to a savings goal
+  const addToSavings = (goalId, amount) => {
+    console.log(`Adding $${amount} to goal ${goalId}`);
+    
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal || !goal.targetAmount) {
+      console.log("This isn't a money goal!");
+      return;
+    }
+
+    const updatedAmount = goal.savedAmount + Number(amount);
+    
+    fetch(`http://localhost:3001/goals/${goalId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ savedAmount: updatedAmount })
+    })
+      .then(res => res.json())
+      .then(updatedGoal => {
+        // Update just this goal
+        setGoals(goals.map(g => 
+          g.id === goalId ? updatedGoal : g
+        ));
+        console.log("Money added!");
+      });
+  };
+
+  // This is what shows up on screen
   return (
-    <div className="goal-app">
-      <h1>My Goal Tracker</h1>
-      <Overview goals={goals} />
-      <AddGoalForm onAddGoal={handleAddGoal} />
-      <GoalList
-        goals={goals}
-        onDelete={handleDeleteGoal}
-        onDeposit={handleDeposit}
-      />
+    <div className="app">
+      <header>
+        <h1>My Goal Tracker </h1>
+        <p>Keep track of what matters</p>
+      </header>
+
+      <main>
+        {/* Show quick stats */}
+        <Overview goals={goals} />
+
+        {/* Form to add new goals */}
+        <AddGoalForm onAddGoal={addNewGoal} />
+
+        {/* The big list of goals */}
+        <GoalList
+          goals={goals}
+          onDelete={deleteGoal}
+          onDeposit={addToSavings}
+        />
+      </main>
+
+      <footer>
+        <p>Made with React</p>
+      </footer>
     </div>
   );
 }
